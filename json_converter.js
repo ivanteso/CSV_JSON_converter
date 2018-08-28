@@ -38,6 +38,7 @@ const csvToConvert = (url='https://prod-edxapp.edx-cdn.org/assets/courseware/v1/
     console.log('the CSV file is downloaded in folder /conversions/', folderName)
     if (data === '') {
       console.log('WARNING: the CSV file is empty. Check if the link provided is correct')
+      return
     }
     console.log('starting conversion to JSON')
     csv()
