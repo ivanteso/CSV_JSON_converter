@@ -20,22 +20,24 @@ const csvToConvert = (url='https://prod-edxapp.edx-cdn.org/assets/courseware/v1/
       callback(error)
     })
   }
-  fs.mkdirSync('conversions')
-  const folderName = `./conversions/${uuidv1()}`
-  fs.mkdirSync(folderName)
+  if (fs.existsSync('./conversions') === false) {
+    fs.mkdirSync('conversions')
+  }
+  const folderName = uuidv1()
+  fs.mkdirSync(path.join(__dirname, '/conversions/', folderName))
   fetchPage(url, (error, data)=>{
     if (error) return console.log(error)
-    fs.writeFileSync(path.join(__dirname, folderName, 'your_CSV.csv'), data)
-    console.log('the CSV file is downloaded in folder ', folderName)
+    fs.writeFileSync(path.join(__dirname, `/conversions/${folderName}`, 'your_CSV.csv'), data)
+    console.log('the CSV file is downloaded in folder /conversions/', folderName)
     console.log('starting conversion to JSON')
     csv()
-    .fromFile(`${folderName}/your_CSV.csv`)
+    .fromFile(`./conversions/${folderName}/your_CSV.csv`)
     .then((jsonObj)=>{
       let json = JSON.stringify(jsonObj, null, 2)
       console.log(json)
-      fs.writeFileSync(path.join(__dirname, folderName, 'your_json_converted.json'), json)
+      fs.writeFileSync(path.join(__dirname, `/conversions/${folderName}`, 'your_json_converted.json'), json)
     })
-    console.log('the conversion is done and the JSON file into the folder ', folderName)
+    console.log('the conversion is done and the JSON file into the folder /conversions/', folderName)
   })
 }
 
