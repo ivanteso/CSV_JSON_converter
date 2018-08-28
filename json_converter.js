@@ -1,4 +1,5 @@
 const https = require('https')
+const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const uuidv1 = require('uuid/v1')
@@ -7,7 +8,13 @@ const csv = require('csvtojson')
 const csvToConvert = (url='https://prod-edxapp.edx-cdn.org/assets/courseware/v1/07d100219da1a726dad5eddb090fa215/asset-v1:Microsoft+DEV283x+2T2018+type@asset+block/customer-data.csv') => {
   console.log('downloading CSV from ', url)
   const fetchPage = (urlF, callback) => {
-    https.get(urlF, (response) => {
+    let link;
+    if (url[4] === 's') {
+      link = https;
+    } else {
+      link = http;
+    }
+    link.get(urlF, (response) => {
       let buff = ''
       response.on('data', (chunk) => {
         buff += chunk
@@ -29,6 +36,9 @@ const csvToConvert = (url='https://prod-edxapp.edx-cdn.org/assets/courseware/v1/
     if (error) return console.log(error)
     fs.writeFileSync(path.join(__dirname, `/conversions/${folderName}`, 'your_CSV.csv'), data)
     console.log('the CSV file is downloaded in folder /conversions/', folderName)
+    if (data === '') {
+      console.log('WARNING: the CSV file is empty. Check if the link provided is correct')
+    }
     console.log('starting conversion to JSON')
     csv()
     .fromFile(`./conversions/${folderName}/your_CSV.csv`)
