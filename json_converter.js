@@ -34,7 +34,6 @@ const csvToConvert = (url='https://prod-edxapp.edx-cdn.org/assets/courseware/v1/
     .fromFile(`./conversions/${folderName}/your_CSV.csv`)
     .then((jsonObj)=>{
       let json = JSON.stringify(jsonObj, null, 2)
-      console.log(json)
       fs.writeFileSync(path.join(__dirname, `/conversions/${folderName}`, 'your_json_converted.json'), json)
     })
     console.log('the conversion is done and the JSON file into the folder /conversions/', folderName)
